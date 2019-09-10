@@ -1,0 +1,26 @@
+create database lib;
+use lib;
+create table PUBLISHER(Name varchar(10),Address varchar(10),Phone int,primary key(Name));
+
+create table BOOK(Book_id varchar(10),Title varchar(10),Pub_Name varchar(10),Pub_Year int,primary key(Book_id),foreign key(Pub_Name) references PUBLISHER(Name) on delete cascade);
+
+create table BOOK_AUTHORS(Book_id varchar(10),Author_Name varchar(10),primary key(Book_id),foreign key(Book_id) references BOOK(Book_id) on delete cascade);
+DROP table BOOK;
+
+create table LIBRARY_BRANCH(Branch_id varchar(10),Branch_Name varchar(10),Address varchar(10),primary key(Branch_id));
+create table BOOK_COPIES(Book_id varchar(10),Branch_id varchar(10),No_of_copies int,primary key(Book_id,Branch_id),foreign key(Book_id) references BOOK(Book_id) on delete cascade,foreign key(Branch_id) references LIBRARY_BRANCH(Branch_id) on delete cascade);
+
+create table BOOK_LENDING(Book_id varchar(10),Branch_id varchar(10),Card_no int,Date_out date,Due_date date,primary key(Book_id,Branch_id,Card_no), foreign key(Book_id) references BOOK(Book_id) on delete cascade,foreign key(Branch_id) references LIBRARY_BRANCH(Branch_id) on delete cascade);  
+
+desc BOOK_LENDING;
+
+select * from publisher;
+select * from book_copies;
+select * from book_lending;
+select * from book;
+
+select b.Book_id,b.title,b.Pub_Name,a.Author_Name,c.No_of_copies,c.Branch_id from BOOK b, BOOK_AUTHORS a,BOOK_COPIES c where b.Book_id=a.Book_id and b.Book_id=c.Book_id;
+
+select card_no from book_lending where Date_out between '2011-01-17' and '2021-04-17' group by card_no having count(*)>1;
+
+delete from BOOK where Book_id=4;
